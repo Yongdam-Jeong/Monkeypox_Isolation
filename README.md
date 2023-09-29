@@ -1,8 +1,5 @@
 # Monkeypox_Isolation
 
-# Modelling the effectiveness of an isolation strategy for managing mpox outbreaks with variable infectiousness profiles
-
-
 # Viral clearance model
 
 'mpox.csv' is an example data of longitudinal viral load data for mpox patients.
