@@ -17,4 +17,4 @@ These files are used to estimate parameters of the viral clearance model in MONO
 
 'Testing-based.R' calculates numerical values of "Risk of prematurely ending isolation", "Infectious period after ending isolation", and "Unnecessarily prolonged isolation period" for mpox patients under testing-based isolation rules.
 
-* Text files and R codes above should be in the same location.
+* Text files and R (version 4.2.3) codes above should be in the same location.
