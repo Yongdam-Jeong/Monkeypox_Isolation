@@ -2,8 +2,6 @@
 
 Modelling the effectiveness of an isolation strategy for managing mpox outbreaks with variable infectiousness profiles
 
-Yong Dam Jeong, Takara Nishiyama, Hyeongki Park, Masahiro Ishikane, Noriko Iwamoto, Kazuyuki Aihara, Koichi Watashi, Eline Op de Coul, William S Hart, Robin N Thompson, Norio Ohmagari, Jacco Wallinga, Shingo Iwami and Fuminari Miura
-
 
 ( Viral clearance model )
 
