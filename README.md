@@ -6,7 +6,7 @@ Yong Dam Jeong, Takara Nishiyama, Hyeongki Park, Masahiro Ishikane, Noriko Iwamo
 
 
 
-1) Viral clearance model
+1. Viral clearance model
 
 'mpox.csv' is an example data of longitudinal viral load data for mpox patients.
 
@@ -16,7 +16,7 @@ These files are used to estimate parameters of the viral clearance model in MONO
 
 
 
-2) Simulation for isolation guideline
+2. Simulation for isolation guideline
 
 'populationParameters_mpox.txt' is an example for the estimated parameters of viral clearance model for mpox patients.
 
