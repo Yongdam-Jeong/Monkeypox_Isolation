@@ -1,0 +1,6 @@
+parameter,value
+delta_pop,0.34
+V0_pop,7.71
+omega_delta,0.27
+omega_V0,0.06
+a,1.26
