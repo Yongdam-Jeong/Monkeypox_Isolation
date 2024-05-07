@@ -11,6 +11,11 @@ These files are used to estimate parameters of the viral clearance model in MONO
 
 # Simulation for isolation guideline
 
+This code simulates and evaluates the effectiveness of various isolation rules for mpox patients: symptom-based, fixed-duration, and testing-based rules. Specifically, it calculates numerical values of the following metrics for ending isolation:
+  1) Risk of prematurely ending isolation (%)
+  2) Infectious period after ending isolation (days)
+  3) Unnecessarily prolonged isolation period (days)
+
 'populationParameters_mpox.txt' is an example for the estimated parameters of viral clearance model for mpox patients.
 
 'Symptom-based.R' calculates numerical values of "Risk of prematurely ending isolation", "Infectious period after ending isolation", and "Unnecessarily prolonged isolation period" for mpox patients under symptom-based isolation rules.
