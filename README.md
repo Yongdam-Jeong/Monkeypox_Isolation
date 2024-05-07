@@ -1,4 +1,4 @@
-# Monkeypox_Isolation
+# Mpox_Isolation
 
 # Viral clearance model
 
