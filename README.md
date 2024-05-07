@@ -1,4 +1,4 @@
-# Mpox_Isolation
+# Modelling the effectiveness of an isolation strategy for managing mpox outbreaks with variable infectiousness profiles
 
 # Viral clearance model
 
