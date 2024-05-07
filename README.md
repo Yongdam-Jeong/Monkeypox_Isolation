@@ -25,3 +25,6 @@ This code simulates and evaluates the effectiveness of various isolation rules f
 'Testing-based.R' calculates numerical values of "Risk of prematurely ending isolation", "Infectious period after ending isolation", and "Unnecessarily prolonged isolation period" for mpox patients under testing-based isolation rules.
 
 * Text files and R (version 4.2.3) codes above should be in the same location.
+* Please set your working directory in R code - "setwd("~/Desktop/XXX")".
+* The data that support the findings of this study are available from the corresponding author upon reasonable request.
+
