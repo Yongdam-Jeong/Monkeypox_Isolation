@@ -1,19 +1,15 @@
+install.packages("deSolve")
+install.packages("writexl")
+
 library(ggplot2)
-library(plyr)
+library(dplyr)
 library(deSolve)
 library(writexl)
 library(readxl)
-library(xlsx)
 
 
 setwd("~/Desktop/")
 
-
-######################################################################################
-######################################################################################
-######################################## Model #######################################
-######################################################################################
-######################################################################################
 
 #################### Setting ####################
 Tmin <- 0
@@ -24,7 +20,7 @@ mtime <- seq(Tmin,Tmax,step_size)
 N <- 1000 ## # of samples
 
 IF1 <- log10(10^5.5) ## Infectiousness threshold
-IF2 <- log10(10^6.0)
+IF2 <- log10(10^6.0) ## Default value
 IF3 <- log10(10^6.5)
 
 Lmin <- ceiling(qlnorm(0.025,meanlog=3.14,sdlog=0.41)) ## Duration of lesion presence
@@ -55,16 +51,19 @@ Covfun<-function(pars){
 
 
 ##################################### Simulation #####################################
-simulation <- 2
+simulation <- 1
 
+#### Risk of prematurely ending isolation (Probability => P)
 P1 <- matrix(NA, nrow = 21, ncol = simulation)
 P2 <- matrix(NA, nrow = 21, ncol = simulation)
 P3 <- matrix(NA, nrow = 21, ncol = simulation)
 
+#### Infectious period after ending isolation (Length => L)
 L1 <- matrix(NA, nrow = 21, ncol = simulation)
 L2 <- matrix(NA, nrow = 21, ncol = simulation)
 L3 <- matrix(NA, nrow = 21, ncol = simulation)
 
+#### Unnecessarily prolonged isolation period (Burden => B)
 B1 <- matrix(NA, nrow = 21, ncol = simulation)
 B2 <- matrix(NA, nrow = 21, ncol = simulation)
 B3 <- matrix(NA, nrow = 21, ncol = simulation)
@@ -264,3 +263,17 @@ for (s in 1:simulation) {
   }
   
 }
+
+#################### Results ####################
+
+setwd("~/capsule/results")
+
+## Infectiousness threshold = 10^6 copies/ml (Default)
+
+P2 <- data.frame(time=seq(-5,15,by=1),value=P2)
+L2 <- data.frame(time=seq(-5,15,by=1),value=L2)
+B2 <- data.frame(time=seq(-5,15,by=1),value=B2)
+
+write_xlsx(P2,"Sym_P.xlsx") 
+write_xlsx(L2,"Sym_L.xlsx") 
+write_xlsx(B2,"Sym_B.xlsx") 
