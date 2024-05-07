@@ -1,9 +1,11 @@
+install.packages("deSolve")
+install.packages("writexl")
+
 library(ggplot2)
-library(plyr)
+library(dplyr)
 library(deSolve)
 library(writexl)
 library(readxl)
-library(xlsx)
 
 
 setwd("~/Desktop/")
@@ -18,7 +20,7 @@ mtime <- seq(Tmin,Tmax,step_size)
 N <- 1000 ## # of samples
 
 IF1 <- log10(10^5.5) ## Infectiousness threshold
-IF2 <- log10(10^6.0)
+IF2 <- log10(10^6.0) ## Default value
 IF3 <- log10(10^6.5)
 
 
@@ -46,16 +48,20 @@ Covfun<-function(pars){
 
 
 ##################################### Simulation #####################################
-simulation <- 2
+simulation <- 1
 
+
+#### Risk of prematurely ending isolation (Probability => P)
 P1 <- matrix(NA, nrow = length(mtime), ncol = simulation)
 P2 <- matrix(NA, nrow = length(mtime), ncol = simulation)
 P3 <- matrix(NA, nrow = length(mtime), ncol = simulation)
 
+#### Infectious period after ending isolation (Length => L)
 L1 <- matrix(NA, nrow = length(mtime), ncol = simulation)
 L2 <- matrix(NA, nrow = length(mtime), ncol = simulation)
 L3 <- matrix(NA, nrow = length(mtime), ncol = simulation)
 
+#### Unnecessarily prolonged isolation period (Burden => B)
 B1 <- matrix(NA, nrow = length(mtime), ncol = simulation)
 B2 <- matrix(NA, nrow = length(mtime), ncol = simulation)
 B3 <- matrix(NA, nrow = length(mtime), ncol = simulation)
@@ -200,213 +206,20 @@ for (k in 1:length(mtime)) {
 }
 
 
-P1 <- data.frame(P1); write.xlsx(P1,"One_P1.xlsx"); 
-P2 <- data.frame(P2); write.xlsx(P2,"One_P2.xlsx"); 
-P3 <- data.frame(P3); write.xlsx(P3,"One_P3.xlsx"); 
-
-L1 <- data.frame(L1); write.xlsx(L1,"One_L1.xlsx"); 
-L2 <- data.frame(L2); write.xlsx(L2,"One_L2.xlsx"); 
-L3 <- data.frame(L3); write.xlsx(L3,"One_L3.xlsx"); 
-
-B1 <- data.frame(B1); write.xlsx(B1,"One_B1.xlsx"); 
-B2 <- data.frame(B2); write.xlsx(B2,"One_B2.xlsx"); 
-B3 <- data.frame(B3); write.xlsx(B3,"One_B3.xlsx"); 
 
 
-#######################################################################################
-#######################################################################################
-######################################## Figure #######################################
-#######################################################################################
-#######################################################################################
+#################### Results ####################
 
-P1 <- as.matrix(read.xlsx("One_P1.xlsx", sheetIndex = 1)); P1 <- P1[,-1]
-P2 <- as.matrix(read.xlsx("One_P2.xlsx", sheetIndex = 1)); P2 <- P2[,-1]
-P3 <- as.matrix(read.xlsx("One_P3.xlsx", sheetIndex = 1)); P3 <- P3[,-1]
+setwd("~/capsule/results")
 
-L1 <- as.matrix(read.xlsx("One_L1.xlsx", sheetIndex = 1)); L1 <- L1[,-1]
-L2 <- as.matrix(read.xlsx("One_L2.xlsx", sheetIndex = 1)); L2 <- L2[,-1]
-L3 <- as.matrix(read.xlsx("One_L3.xlsx", sheetIndex = 1)); L3 <- L3[,-1]
+## Infectiousness threshold = 10^6 copies/ml (Default)
 
-B1 <- as.matrix(read.xlsx("One_B1.xlsx", sheetIndex = 1)); B1 <- B1[,-1]
-B2 <- as.matrix(read.xlsx("One_B2.xlsx", sheetIndex = 1)); B2 <- B2[,-1]
-B3 <- as.matrix(read.xlsx("One_B3.xlsx", sheetIndex = 1)); B3 <- B3[,-1]
+P2 <- data.frame(time=mtime,value=P2)
+L2 <- data.frame(time=mtime,value=L2)
+B2 <- data.frame(time=mtime,value=B2)
+
+write_xlsx(P2,"Fix_P.xlsx") 
+write_xlsx(L2,"Fix_L.xlsx") 
+write_xlsx(B2,"Fix_B.xlsx") 
 
 
-P11 <- matrix(NA, nrow = length(mtime), ncol = 5)
-P22 <- matrix(NA, nrow = length(mtime), ncol = 5)
-P33 <- matrix(NA, nrow = length(mtime), ncol = 5)
-
-L11 <- matrix(NA, nrow = length(mtime), ncol = 5)
-L22 <- matrix(NA, nrow = length(mtime), ncol = 5)
-L33 <- matrix(NA, nrow = length(mtime), ncol = 5)
-
-B11 <- matrix(NA, nrow = length(mtime), ncol = 5)
-B22 <- matrix(NA, nrow = length(mtime), ncol = 5)
-B33 <- matrix(NA, nrow = length(mtime), ncol = 5)
-
-for (k in 1:length(mtime)) {
-  
-  P11[k,1] <- k-1; L11[k,1] <- k-1; B11[k,1] <- k-1;
-  P22[k,1] <- k-1; L22[k,1] <- k-1; B22[k,1] <- k-1;
-  P33[k,1] <- k-1; L33[k,1] <- k-1; B33[k,1] <- k-1;
-  
-  P11[k,2] <- quantile(as.numeric(P1[k,]),0.025); L11[k,2] <- quantile(as.numeric(L1[k,]),0.025); B11[k,2] <- quantile(as.numeric(B1[k,]),0.025);
-  P22[k,2] <- quantile(as.numeric(P2[k,]),0.025); L22[k,2] <- quantile(as.numeric(L2[k,]),0.025); B22[k,2] <- quantile(as.numeric(B2[k,]),0.025);
-  P33[k,2] <- quantile(as.numeric(P3[k,]),0.025); L33[k,2] <- quantile(as.numeric(L3[k,]),0.025); B33[k,2] <- quantile(as.numeric(B3[k,]),0.025);
-  
-  P11[k,3] <- mean(as.numeric(P1[k,])); L11[k,3] <- mean(as.numeric(L1[k,])); B11[k,3] <- mean(as.numeric(B1[k,]));
-  P22[k,3] <- mean(as.numeric(P2[k,])); L22[k,3] <- mean(as.numeric(L2[k,])); B22[k,3] <- mean(as.numeric(B2[k,]));
-  P33[k,3] <- mean(as.numeric(P3[k,])); L33[k,3] <- mean(as.numeric(L3[k,])); B33[k,3] <- mean(as.numeric(B3[k,]));
-  
-  P11[k,4] <- quantile(as.numeric(P1[k,]),0.975); L11[k,4] <- quantile(as.numeric(L1[k,]),0.975); B11[k,4] <- quantile(as.numeric(B1[k,]),0.975);
-  P22[k,4] <- quantile(as.numeric(P2[k,]),0.975); L22[k,4] <- quantile(as.numeric(L2[k,]),0.975); B22[k,4] <- quantile(as.numeric(B2[k,]),0.975);
-  P33[k,4] <- quantile(as.numeric(P3[k,]),0.975); L33[k,4] <- quantile(as.numeric(L3[k,]),0.975); B33[k,4] <- quantile(as.numeric(B3[k,]),0.975);
-  
-  P11[k,5] <- median(as.numeric(P1[k,])); L11[k,5] <- median(as.numeric(L1[k,])); B11[k,5] <- median(as.numeric(B1[k,]));
-  P22[k,5] <- median(as.numeric(P2[k,])); L22[k,5] <- median(as.numeric(L2[k,])); B22[k,5] <- median(as.numeric(B2[k,]));
-  P33[k,5] <- median(as.numeric(P3[k,])); L33[k,5] <- median(as.numeric(L3[k,])); B33[k,5] <- median(as.numeric(B3[k,]));
-  
-}
-
-P11 <- data.frame(P11); colnames(P11) <- c("day","min","mean","max","median")
-P22 <- data.frame(P22); colnames(P22) <- c("day","min","mean","max","median")
-P33 <- data.frame(P33); colnames(P33) <- c("day","min","mean","max","median")
-
-L11 <- data.frame(L11); colnames(L11) <- c("day","min","mean","max","median")
-L22 <- data.frame(L22); colnames(L22) <- c("day","min","mean","max","median")
-L33 <- data.frame(L33); colnames(L33) <- c("day","min","mean","max","median")
-
-B11 <- data.frame(B11); colnames(B11) <- c("day","min","mean","max","median")
-B22 <- data.frame(B22); colnames(B22) <- c("day","min","mean","max","median")
-B33 <- data.frame(B33); colnames(B33) <- c("day","min","mean","max","median")
-
-P111 <- subset(P11,P11$mean<=5); P111 <- min(P111$day) 
-L111 <- subset(L11,L11$mean<=1); L111 <- min(L111$day)
-OneI1 <- max(P111,L111); OneB1 <- B11$mean[which(B11$day==OneI1)]
-
-P222 <- subset(P22,P22$mean<=5); P222 <- min(P222$day) 
-L222 <- subset(L22,L22$mean<=1); L222 <- min(L222$day)
-OneI2 <- max(P222,L222); OneB2 <- B22$mean[which(B22$day==OneI2)]
-
-P333 <- subset(P33,P33$mean<=5); P333 <- min(P333$day) 
-L333 <- subset(L33,L33$mean<=1); L333 <- min(L333$day)
-OneI3 <- max(P333,L333); OneB3 <- B33$mean[which(B33$day==OneI3)]
-
-
-col1 <- "#1C115C"
-col2 <- "#5D1A66"
-col3 <- "#DF67DA"
-
-
-sfn <- "One_risk.pdf"
-pdf(sfn,width=14,height=10)
-theme_set(theme_classic(base_size = 32, base_family = "Helvetica"))
-xlabel <- "Isolation period (days)"
-ylabel <- "Probability of prematurely ending isolation (%)"
-plt1 <- ggplot() +
-
-  geom_ribbon(data=P11,aes(x=day,ymin=min,ymax=max), fill=col1, alpha=0.2) +
-  geom_path(data=P11,aes(x=day,y=mean), color=col1, lwd=1.2) +
-
-  geom_ribbon(data=P22,aes(x=day,ymin=min,ymax=max), fill=col2, alpha=0.2) +
-  geom_path(data=P22,aes(x=day,y=mean), color=col2, lwd=1.2) +
-
-  geom_ribbon(data=P33,aes(x=day,ymin=min,ymax=max), fill=col3, alpha=0.2) +
-  geom_path(data=P33,aes(x=day,y=mean), color=col3, lwd=1.2) +
-  
-  xlab(xlabel) +
-  ylab(ylabel) +
-
-  scale_x_continuous(breaks=c(seq(0,30,by=5)),limits=c(0,30)) +
-  scale_y_continuous(breaks=seq(0,100,by=20),limits=c(0,100)) +
-  
-  theme(axis.text = element_text(colour = "black"),
-        axis.ticks = element_line(colour = "black"),
-        axis.line = element_line(colour = "black"),
-        panel.grid.major = element_line(linetype = "dotted",color = "gray90"),
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank(),
-        legend.position='none',
-        axis.title.y = element_text(family="Helvetica"),
-        axis.title.x = element_text(family="Helvetica"))
-print( plt1 )
-dev.off()
-
-
-sfn <- "One_length.pdf"
-pdf(sfn,width=14,height=10)
-theme_set(theme_classic(base_size = 32, base_family = "Helvetica"))
-xlabel <- "Isolation period (days)"
-ylabel <- "Infectious period after ending isolation (days)"
-plt2 <- ggplot() +
-  
-  geom_ribbon(data=L11,aes(x=day,ymin=min,ymax=max), fill=col1, alpha=0.2) +
-  geom_path(data=L11,aes(x=day,y=mean), color=col1, lwd=1.2) +
-  
-  geom_ribbon(data=L22,aes(x=day,ymin=min,ymax=max), fill=col2, alpha=0.2) +
-  geom_path(data=L22,aes(x=day,y=mean), color=col2, lwd=1.2) +
-  
-  geom_ribbon(data=L33,aes(x=day,ymin=min,ymax=max), fill=col3, alpha=0.2) +
-  geom_path(data=L33,aes(x=day,y=mean), color=col3, lwd=1.2) +
-  
-  xlab(xlabel) +
-  ylab(ylabel) +
-  
-  scale_x_continuous(breaks=c(seq(0,30,by=5)),limits=c(0,30)) +
-  scale_y_continuous(breaks=seq(0,20,by=4),limits=c(0,20)) +
-  
-  theme(axis.text = element_text(colour = "black"),
-        axis.ticks = element_line(colour = "black"),
-        axis.line = element_line(colour = "black"),
-        panel.grid.major = element_line(linetype = "dotted",color = "gray90"),
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank(),
-        legend.position='none',
-        axis.title.y = element_text(family="Helvetica"),
-        axis.title.x = element_text(family="Helvetica"))
-print( plt2 )
-dev.off()
-
-
-sfn <- "One_burden.pdf"
-pdf(sfn,width=14,height=10)
-theme_set(theme_classic(base_size = 32, base_family = "Helvetica"))
-xlabel <- "Isolation period (days)"
-ylabel <- "Unnecessarily prolonged isolation period (days)"
-plt3 <- ggplot() +
-  
-  geom_ribbon(data=B11,aes(x=day,ymin=min,ymax=max), fill=col1, alpha=0.2) +
-  geom_path(data=B11,aes(x=day,y=mean), color=col1, lwd=1.2) +
-
-  geom_ribbon(data=B22,aes(x=day,ymin=min,ymax=max), fill=col2, alpha=0.2) +
-  geom_path(data=B22,aes(x=day,y=mean), color=col2, lwd=1.2) +
-
-  geom_ribbon(data=B33,aes(x=day,ymin=min,ymax=max), fill=col3, alpha=0.2) +
-  geom_path(data=B33,aes(x=day,y=mean), color=col3, lwd=1.2) +
-
-  xlab(xlabel) +
-  ylab(ylabel) +
-  
-  scale_x_continuous(breaks=c(seq(0,30,by=5)),limits=c(0,30)) +
-  scale_y_continuous(breaks=seq(-20,30,by=10),limits=c(-20,30)) +
-  
-  theme(axis.text = element_text(colour = "black"),
-        axis.ticks = element_line(colour = "black"),
-        axis.line = element_line(colour = "black"),
-        panel.grid.major = element_line(linetype = "dotted",color = "gray90"),
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank(),
-        legend.position='none',
-        axis.title.y = element_text(family="Helvetica"),
-        axis.title.x = element_text(family="Helvetica"))
-print( plt3 )
-dev.off()
-
-
-sfn <- "One_size_fits_all.pdf"
-pdf(sfn,width=15*3,height=11)
-theme_set(theme_classic(base_size = 32, base_family = "Helvetica"))
-plt <- wrap_elements(plt1) + wrap_elements(plt2) + wrap_elements(plt3) +
-  plot_layout(ncol=3, widths = c(1,1,1))
-print( plt )
-dev.off()
