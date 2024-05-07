@@ -9,7 +9,7 @@
 These files are used to estimate parameters of the viral clearance model in MONOLIX2023R1.
 
 
-# Simulation for isolation guideline
+# Simulation for isolation rules
 
 This code simulates and evaluates the effectiveness of various isolation rules for mpox patients: symptom-based, fixed-duration, and testing-based rules. Specifically, it calculates numerical values of the following metrics for ending isolation:
   1) Risk of prematurely ending isolation (%)
